@@ -11,6 +11,8 @@ URL:		http://www.directfb.org/fusionsound.xml
 Patch0:		%{name}-conf.patch
 BuildRequires:	DirectFB-devel >= 0.9.20
 BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -32,7 +34,8 @@ odtwarzania miksera w nadrzêdnej aplikacji.
 Summary:	Development files for the FusionSound
 Summary(pl):	Pliki rozwojowe dla FusionSound
 Group:		Development/Libraries
-Requires:	%{name} = %{version}
+Requires:	DirectFB-devel >= 0.9.20
+# doesn't require base
 
 %description devel
 Header files required for development using FusionSound.
@@ -45,6 +48,8 @@ FusionSound.
 Summary:	Static FusionSound library
 Summary(pl):	Statyczna biblioteka FusionSound
 Group:		Development/Libraries
+# base for directory, -devel for headers
+Requires:	%{name} = %{version}
 Requires:	%{name}-devel = %{version}
 
 %description static
@@ -58,7 +63,11 @@ Statyczna biblioteka FusionSound.
 %patch0 -p1
 
 %build
+%{__libtoolize}
+%{__aclocal}
 %{__autoconf}
+%{__autoheader}
+%{__automake}
 %configure \
 	--enable-static
 %{__make}
@@ -81,15 +90,17 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog TODO docs/html/[!M]*
+%dir %{_libdir}/directfb-*/interfaces/IFusionSound
 %attr(755,root,root) %{_libdir}/directfb-*/interfaces/IFusionSound/lib*.so
 
 %files devel
 %defattr(644,root,root,755)
-%{_libdir}/directfb-*/interfaces/IFusionSound/lib*.la
-%{_includedir}/fusionsound/*.h
+%{_includedir}/fusionsound
 %{_pkgconfigdir}/*.pc
 %{_examplesdir}/%{name}-%{version}
 
 %files static
 %defattr(644,root,root,755)
+# .la makes no sense in -devel (it's module); here for DFB static linking hacks
+%{_libdir}/directfb-*/interfaces/IFusionSound/lib*.la
 %{_libdir}/directfb-*/interfaces/IFusionSound/lib*.a
