@@ -2,13 +2,15 @@ Summary:	Audio sub system for multiple applications
 Summary(pl):	D¼wiêkowy podsystem dla z³o¿onych aplikacji
 Name:		FusionSound
 Version:	0.9.19
-Release:	0.1
+Release:	1
 License:	GPL
 Group:		Libraries
 Source0:	http://www.directfb.org/download/FusionSound/%{name}-%{version}.tar.gz
 # Source0-md5:	433214d60e7a1147103abf55717f2f80
 URL:		http://www.directfb.org/fusionsound.xml
-BuildRequires:	DirectFB-devel
+Patch0:		%{name}-conf.patch
+BuildRequires:	DirectFB-devel >= 0.9.20
+BuildRequires:	autoconf
 BuildRequires:	pkgconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -53,8 +55,10 @@ Statyczna biblioteka FusionSound.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
+%{__autoconf}
 %configure \
 	--enable-static
 %{__make}
@@ -66,7 +70,7 @@ install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-cp -rf examples/[!C]* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+cp -rf examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -76,16 +80,16 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog TODO docs/html/*.html
+%doc AUTHORS ChangeLog TODO docs/html/[!M]*
+%attr(755,root,root) %{_libdir}/directfb-*/interfaces/IFusionSound/lib*.so
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/directfb-0.9.20/interfaces/IFusionSound/lib*.so
-%{_libdir}/directfb-0.9.20/interfaces/IFusionSound/lib*.la
+%{_libdir}/directfb-*/interfaces/IFusionSound/lib*.la
 %{_includedir}/fusionsound/*.h
 %{_pkgconfigdir}/*.pc
 %{_examplesdir}/%{name}-%{version}
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/directfb-0.9.20/interfaces/IFusionSound/lib*.a
+%{_libdir}/directfb-*/interfaces/IFusionSound/lib*.a
