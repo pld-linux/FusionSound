@@ -1,12 +1,12 @@
 Summary:	Audio sub system for multiple applications
 Summary(pl):	D¼wiêkowy podsystem dla z³o¿onych aplikacji
 Name:		FusionSound
-Version:	0.9.21
+Version:	0.9.22
 Release:	1
 License:	GPL
 Group:		Libraries
 Source0:	http://www.directfb.org/download/FusionSound/%{name}-%{version}.tar.gz
-# Source0-md5:	aa9ba7852bc18ae2481d680a3e367388
+# Source0-md5:	9400f2838c8aded0c2eef2ecb583fa81
 URL:		http://www.directfb.org/fusionsound.xml
 Patch0:		%{name}-conf.patch
 BuildRequires:	DirectFB-devel >= 1:%{version}
