@@ -1,0 +1,12 @@
+diff -urN FusionSound-0.9.19/configure.in FusionSound-0.9.19.conf.patch/configure.in
+--- FusionSound-0.9.19/configure.in	2003-07-04 19:31:23.000000000 +0200
++++ FusionSound-0.9.19.conf.patch/configure.in	2004-01-04 15:58:28.000000000 +0100
+@@ -67,7 +67,7 @@
+   CFLAGS=
+ fi
+ 
+-CFLAGS="-O3 -ffast-math -pipe $CFLAGS"
++CFLAGS="$CFLAGS"
+ 
+ AC_ARG_ENABLE(extra-warnings,
+   [  --enable-extra-warnings   enable extra warnings [default=no]],,
