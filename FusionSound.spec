@@ -7,7 +7,7 @@ License:	GPL
 Group:		Libraries
 Source0:	http://www.directfb.org/download/FusionSound/%{name}-%{version}.tar.gz
 # Source0-md5:	f061ed3c306bde25ddc528f710ebc4d8
-URL:		http://www.directfb.org/fusionsound.xml
+URL:		http://www.directfb.org/index.php?path=Development/Projects/FusionSound
 Patch0:		%{name}-conf.patch
 BuildRequires:	DirectFB-devel >= 1:%{version}
 BuildRequires:	autoconf >= 2.52
