@@ -25,7 +25,7 @@ thread in the master application.
 
 %description -l pl
 FusionSound wspiera z³o¿one aplikacje u¿ywaj±ce Fusion IPC. Dostarcza
-strumieni, statyczny bufor dzwiêkowy i kontrolê poprzez ka¿d± ilo¶æ
+strumieni, statyczny bufor d¼wiêkowy i kontrolê poprzez ka¿d± ilo¶æ
 konkurencyjnych odtwarzaczy. Próbkowana dana jest zawsze przechowywana
 w pamiêci dzielonej. Rozpoczynaj±c odtwarzanie dodaje wej¶cie do listy
 odtwarzania miksera w nadrzêdnej aplikacji.
