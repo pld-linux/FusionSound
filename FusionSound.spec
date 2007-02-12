@@ -1,5 +1,5 @@
 Summary:	Audio sub system for multiple applications
-Summary(pl):	DºwiÍkowy podsystem dla z≥oøonych aplikacji
+Summary(pl.UTF-8):   D≈∫wiƒôkowy podsystem dla z≈Ço≈ºonych aplikacji
 Name:		FusionSound
 Version:	0.9.25
 Release:	2
@@ -23,16 +23,16 @@ concurrent playbacks. Sample data is always stored in shared memory,
 starting a playback simply adds an entry to the playlist of the mixer
 thread in the master application.
 
-%description -l pl
-FusionSound wspiera z≥oøone aplikacje uøywaj±ce Fusion IPC. Dostarcza
-strumieni, statyczny bufor dºwiÍkowy i kontrolÍ poprzez kaød± ilo∂Ê
-konkurencyjnych odtwarzaczy. PrÛbkowana dana jest zawsze przechowywana
-w pamiÍci dzielonej. Rozpoczynaj±c odtwarzanie dodaje wej∂cie do listy
-odtwarzania miksera w nadrzÍdnej aplikacji.
+%description -l pl.UTF-8
+FusionSound wspiera z≈Ço≈ºone aplikacje u≈ºywajƒÖce Fusion IPC. Dostarcza
+strumieni, statyczny bufor d≈∫wiƒôkowy i kontrolƒô poprzez ka≈ºdƒÖ ilo≈õƒá
+konkurencyjnych odtwarzaczy. Pr√≥bkowana dana jest zawsze przechowywana
+w pamiƒôci dzielonej. RozpoczynajƒÖc odtwarzanie dodaje wej≈õcie do listy
+odtwarzania miksera w nadrzƒôdnej aplikacji.
 
 %package devel
 Summary:	Development files for the FusionSound
-Summary(pl):	Pliki rozwojowe dla FusionSound
+Summary(pl.UTF-8):   Pliki rozwojowe dla FusionSound
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	DirectFB-devel >= 1:%{version}
@@ -40,13 +40,13 @@ Requires:	DirectFB-devel >= 1:%{version}
 %description devel
 Header files required for development using FusionSound.
 
-%description devel -l pl
-Pliki nag≥Ûwkowe wymagane do tworzenia programÛw z uøyciem
+%description devel -l pl.UTF-8
+Pliki nag≈Ç√≥wkowe wymagane do tworzenia program√≥w z u≈ºyciem
 FusionSound.
 
 %package static
 Summary:	Static FusionSound library
-Summary(pl):	Statyczna biblioteka FusionSound
+Summary(pl.UTF-8):   Statyczna biblioteka FusionSound
 Group:		Development/Libraries
 # base for directory, -devel for headers
 Requires:	%{name}-devel = %{version}-%{release}
@@ -54,7 +54,7 @@ Requires:	%{name}-devel = %{version}-%{release}
 %description static
 Static FusionSound library.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczna biblioteka FusionSound.
 
 %prep
