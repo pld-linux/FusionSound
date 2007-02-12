@@ -1,5 +1,5 @@
 Summary:	Audio sub system for multiple applications
-Summary(pl.UTF-8):   Dźwiękowy podsystem dla złożonych aplikacji
+Summary(pl.UTF-8):	Dźwiękowy podsystem dla złożonych aplikacji
 Name:		FusionSound
 Version:	0.9.25
 Release:	2
@@ -32,7 +32,7 @@ odtwarzania miksera w nadrzędnej aplikacji.
 
 %package devel
 Summary:	Development files for the FusionSound
-Summary(pl.UTF-8):   Pliki rozwojowe dla FusionSound
+Summary(pl.UTF-8):	Pliki rozwojowe dla FusionSound
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	DirectFB-devel >= 1:%{version}
@@ -46,7 +46,7 @@ FusionSound.
 
 %package static
 Summary:	Static FusionSound library
-Summary(pl.UTF-8):   Statyczna biblioteka FusionSound
+Summary(pl.UTF-8):	Statyczna biblioteka FusionSound
 Group:		Development/Libraries
 # base for directory, -devel for headers
 Requires:	%{name}-devel = %{version}-%{release}
