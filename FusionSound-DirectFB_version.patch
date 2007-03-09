@@ -1,0 +1,12 @@
+diff -ur FusionSound-1.0.0-rc1.orig/configure.in FusionSound-1.0.0-rc1/configure.in
+--- FusionSound-1.0.0-rc1.orig/configure.in	2007-03-09 09:17:21.000000000 +0100
++++ FusionSound-1.0.0-rc1/configure.in	2007-03-09 09:22:36.000000000 +0100
+@@ -197,7 +197,7 @@
+ #
+ # Check for DirectFB-Internal
+ #
+-DIRECTFB_REQUIRED_VERSION=$FUSIONSOUND_VERSION
++DIRECTFB_REQUIRED_VERSION=1.0.0
+ 
+ AC_MSG_CHECKING(for DirectFB-Internal)
+ if $PKG_CONFIG --atleast-version $DIRECTFB_REQUIRED_VERSION directfb-internal ; then
