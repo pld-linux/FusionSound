@@ -1,14 +1,16 @@
+%define		_rc	rc1
 Summary:	Audio sub system for multiple applications
 Summary(pl):	D¼wiêkowy podsystem dla z³o¿onych aplikacji
 Name:		FusionSound
-Version:	0.9.25
-Release:	2
+Version:	1.0.0
+Release:	0.%{_rc}.1
 License:	GPL
 Group:		Libraries
-Source0:	http://www.directfb.org/downloads/Core/%{name}-%{version}.tar.gz
-# Source0-md5:	c190528492fdb9e54e7889bf3874c814
+Source0:	http://www.directfb.org/downloads/Core/%{name}-%{version}-%{_rc}.tar.gz
+# Source0-md5:	b9a64ec13b57763e53b13ba4bec86f90
 URL:		http://www.directfb.org/index.php?path=Development/Projects/FusionSound
 Patch0:		%{name}-conf.patch
+Patch1:		%{name}-DirectFB_version.patch
 BuildRequires:	DirectFB-devel >= 1:%{version}
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
@@ -58,8 +60,9 @@ Static FusionSound library.
 Statyczna biblioteka FusionSound.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}-%{_rc}
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__libtoolize}
@@ -89,12 +92,16 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog TODO docs/html/[!M]*
+%attr(755,root,root) %{_bindir}/fsdump
 %attr(755,root,root) %{_bindir}/fsmaster
 %attr(755,root,root) %{_libdir}/libfusionsound-*.so.*.*.*
 %dir %{_libdir}/directfb-*/interfaces/IFusionSound
 %attr(755,root,root) %{_libdir}/directfb-*/interfaces/IFusionSound/lib*.so
 %dir %{_libdir}/directfb-*/interfaces/IFusionSoundMusicProvider
 %attr(755,root,root) %{_libdir}/directfb-*/interfaces/IFusionSoundMusicProvider/lib*.so
+%dir %{_libdir}/directfb-*/snddrivers
+%attr(755,root,root) %{_libdir}/directfb-*/snddrivers/libfusionsound*.so
+%{_mandir}/man5/fusionsoundrc.5.gz
 
 %files devel
 %defattr(644,root,root,755)
@@ -109,7 +116,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libfusionsound.a
 # .la makes no sense in -devel (it's module); here for DFB static linking hacks
-%{_libdir}/directfb-*/interfaces/IFusionSound/lib*.la
-%{_libdir}/directfb-*/interfaces/IFusionSound/lib*.a
-%{_libdir}/directfb-*/interfaces/IFusionSoundMusicProvider/lib*.la
-%{_libdir}/directfb-*/interfaces/IFusionSoundMusicProvider/lib*.a
+%{_libdir}/directfb-*/interfaces/IFusionSound/lib*.[la]*
+%{_libdir}/directfb-*/interfaces/IFusionSoundMusicProvider/lib*.[la]*
+%{_libdir}/directfb-*/snddrivers/libfusionsound*.[la]*
