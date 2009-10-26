@@ -10,6 +10,7 @@ Source0:	http://www.directfb.org/downloads/Core/%{name}-%{version}.tar.gz
 Patch0:		%{name}-conf.patch
 Patch1:		%{name}-git.patch
 Patch2:		%{name}-leck.patch
+Patch3:		compile.patch
 URL:		http://www.directfb.org/index.php?path=Platform/FusionSound
 BuildRequires:	DirectFB-devel >= 1:1.2.0
 # for examples
@@ -132,6 +133,7 @@ Moduł FusionSound dostarczający muzykę Ogg Vorbis.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %{__libtoolize}
