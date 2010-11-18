@@ -11,8 +11,9 @@ Patch0:		%{name}-conf.patch
 Patch1:		%{name}-git.patch
 Patch2:		%{name}-leck.patch
 Patch3:		compile.patch
+Patch4:		%{name}-update.patch
 URL:		http://www.directfb.org/index.php?path=Platform/FusionSound
-BuildRequires:	DirectFB-devel >= 1:1.2.0
+BuildRequires:	DirectFB-devel >= 1:1.4.0
 # for examples
 BuildRequires:	LiTE-devel >= 0.8.9
 BuildRequires:	alsa-lib-devel >= 0.9
@@ -26,6 +27,8 @@ BuildRequires:	libtool
 BuildRequires:	libvorbis-devel >= 1:1.0.0
 BuildRequires:	pkgconfig >= 1:0.9
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		dfblibdir	%{_libdir}/directfb-1.4-5
 
 %description
 FusionSound supports multiple applications using Fusion IPC. It
@@ -46,7 +49,7 @@ Summary:	Development files for the FusionSound
 Summary(pl.UTF-8):	Pliki rozwojowe dla FusionSound
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	DirectFB-devel >= 1:1.2.0
+Requires:	DirectFB-devel >= 1:1.4.0
 
 %description devel
 Header files required for development using FusionSound.
@@ -134,6 +137,7 @@ Moduł FusionSound dostarczający muzykę Ogg Vorbis.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 %{__libtoolize}
@@ -171,26 +175,26 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/fsvolume
 %attr(755,root,root) %{_libdir}/libfusionsound-1.1.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libfusionsound-1.1.so.1
-%dir %{_libdir}/directfb-1.2-0/interfaces/IFusionSound
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/interfaces/IFusionSound/libifusionsound.so
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/interfaces/IFusionSound/libifusionsound_dispatcher.so
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/interfaces/IFusionSound/libifusionsound_requestor.so
-%dir %{_libdir}/directfb-1.2-0/interfaces/IFusionSoundBuffer
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/interfaces/IFusionSoundBuffer/libifusionsoundbuffer_dispatcher.so
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/interfaces/IFusionSoundBuffer/libifusionsoundbuffer_requestor.so
-%dir %{_libdir}/directfb-1.2-0/interfaces/IFusionSoundMusicProvider
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/interfaces/IFusionSoundMusicProvider/libifusionsoundmusicprovider_playlist.so
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/interfaces/IFusionSoundMusicProvider/libifusionsoundmusicprovider_wave.so
-%dir %{_libdir}/directfb-1.2-0/interfaces/IFusionSoundPlayback
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/interfaces/IFusionSoundPlayback/libifusionsoundplayback_dispatcher.so
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/interfaces/IFusionSoundPlayback/libifusionsoundplayback_requestor.so
-%dir %{_libdir}/directfb-1.2-0/interfaces/IFusionSoundStream
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/interfaces/IFusionSoundStream/libifusionsoundstream_dispatcher.so
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/interfaces/IFusionSoundStream/libifusionsoundstream_requestor.so
-%dir %{_libdir}/directfb-1.2-0/snddrivers
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/snddrivers/libfusionsound_alsa.so
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/snddrivers/libfusionsound_oss.so
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/snddrivers/libfusionsound_wave.so
+%dir %{dfblibdir}/interfaces/IFusionSound
+%attr(755,root,root) %{dfblibdir}/interfaces/IFusionSound/libifusionsound.so
+%attr(755,root,root) %{dfblibdir}/interfaces/IFusionSound/libifusionsound_dispatcher.so
+%attr(755,root,root) %{dfblibdir}/interfaces/IFusionSound/libifusionsound_requestor.so
+%dir %{dfblibdir}/interfaces/IFusionSoundBuffer
+%attr(755,root,root) %{dfblibdir}/interfaces/IFusionSoundBuffer/libifusionsoundbuffer_dispatcher.so
+%attr(755,root,root) %{dfblibdir}/interfaces/IFusionSoundBuffer/libifusionsoundbuffer_requestor.so
+%dir %{dfblibdir}/interfaces/IFusionSoundMusicProvider
+%attr(755,root,root) %{dfblibdir}/interfaces/IFusionSoundMusicProvider/libifusionsoundmusicprovider_playlist.so
+%attr(755,root,root) %{dfblibdir}/interfaces/IFusionSoundMusicProvider/libifusionsoundmusicprovider_wave.so
+%dir %{dfblibdir}/interfaces/IFusionSoundPlayback
+%attr(755,root,root) %{dfblibdir}/interfaces/IFusionSoundPlayback/libifusionsoundplayback_dispatcher.so
+%attr(755,root,root) %{dfblibdir}/interfaces/IFusionSoundPlayback/libifusionsoundplayback_requestor.so
+%dir %{dfblibdir}/interfaces/IFusionSoundStream
+%attr(755,root,root) %{dfblibdir}/interfaces/IFusionSoundStream/libifusionsoundstream_dispatcher.so
+%attr(755,root,root) %{dfblibdir}/interfaces/IFusionSoundStream/libifusionsoundstream_requestor.so
+%dir %{dfblibdir}/snddrivers
+%attr(755,root,root) %{dfblibdir}/snddrivers/libfusionsound_alsa.so
+%attr(755,root,root) %{dfblibdir}/snddrivers/libfusionsound_oss.so
+%attr(755,root,root) %{dfblibdir}/snddrivers/libfusionsound_wave.so
 %{_mandir}/man5/fusionsoundrc.5*
 
 %files devel
@@ -207,29 +211,29 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libfusionsound.a
 # .la makes no sense in -devel (it's module); here for DFB static linking hacks
-%{_libdir}/directfb-1.2-0/interfaces/IFusionSound/lib*.[la]*
-%{_libdir}/directfb-1.2-0/interfaces/IFusionSoundBuffer/lib*.[la]*
-%{_libdir}/directfb-1.2-0/interfaces/IFusionSoundMusicProvider/lib*.[la]*
-%{_libdir}/directfb-1.2-0/interfaces/IFusionSoundPlayback/lib*.[la]*
-%{_libdir}/directfb-1.2-0/interfaces/IFusionSoundStream/lib*.[la]*
-%{_libdir}/directfb-1.2-0/snddrivers/libfusionsound*.[la]*
+%{dfblibdir}/interfaces/IFusionSound/lib*.[la]*
+%{dfblibdir}/interfaces/IFusionSoundBuffer/lib*.[la]*
+%{dfblibdir}/interfaces/IFusionSoundMusicProvider/lib*.[la]*
+%{dfblibdir}/interfaces/IFusionSoundPlayback/lib*.[la]*
+%{dfblibdir}/interfaces/IFusionSoundStream/lib*.[la]*
+%{dfblibdir}/snddrivers/libfusionsound*.[la]*
 
 %files musicprovider-cdda
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/interfaces/IFusionSoundMusicProvider/libifusionsoundmusicprovider_cdda.so
+%attr(755,root,root) %{dfblibdir}/interfaces/IFusionSoundMusicProvider/libifusionsoundmusicprovider_cdda.so
 
 %files musicprovider-ffmpeg
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/interfaces/IFusionSoundMusicProvider/libifusionsoundmusicprovider_ffmpeg.so
+%attr(755,root,root) %{dfblibdir}/interfaces/IFusionSoundMusicProvider/libifusionsoundmusicprovider_ffmpeg.so
 
 %files musicprovider-mad
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/interfaces/IFusionSoundMusicProvider/libifusionsoundmusicprovider_mad.so
+%attr(755,root,root) %{dfblibdir}/interfaces/IFusionSoundMusicProvider/libifusionsoundmusicprovider_mad.so
 
 %files musicprovider-timidity
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/interfaces/IFusionSoundMusicProvider/libifusionsoundmusicprovider_timidity.so
+%attr(755,root,root) %{dfblibdir}/interfaces/IFusionSoundMusicProvider/libifusionsoundmusicprovider_timidity.so
 
 %files musicprovider-vorbis
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/directfb-1.2-0/interfaces/IFusionSoundMusicProvider/libifusionsoundmusicprovider_vorbis.so
+%attr(755,root,root) %{dfblibdir}/interfaces/IFusionSoundMusicProvider/libifusionsoundmusicprovider_vorbis.so
