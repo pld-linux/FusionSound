@@ -2,7 +2,7 @@ Summary:	Audio sub system for multiple applications
 Summary(pl.UTF-8):	Dźwiękowy podsystem dla złożonych aplikacji
 Name:		FusionSound
 Version:	1.1.1
-Release:	2
+Release:	3
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://www.directfb.org/downloads/Core/%{name}-%{version}.tar.gz
