@@ -341,3 +341,23 @@
       if (ret) {
            D_ERROR( "Voodoo/Proxy: Could not create the server (%s)!\n", FusionSoundErrorString(ret) );
            return ret;
+--- FusionSound-1.1.1/src/core/core_sound.c.orig	2012-01-01 11:11:56.195907393 +0100
++++ FusionSound-1.1.1/src/core/core_sound.c	2012-01-01 11:57:20.872665292 +0100
+@@ -314,7 +314,7 @@ fs_core_create_buffer( CoreSound *core )
+      D_ASSERT( core->shared->buffer_pool != NULL );
+ 
+      /* Create a new object in the buffer pool. */
+-     return (CoreSoundBuffer*) fusion_object_create( core->shared->buffer_pool, core->world );
++     return (CoreSoundBuffer*) fusion_object_create( core->shared->buffer_pool, core->world, fusion_id(core->world) );
+ }
+ 
+ CorePlayback *
+@@ -325,7 +325,7 @@ fs_core_create_playback( CoreSound *core
+      D_ASSERT( core->shared->playback_pool != NULL );
+ 
+      /* Create a new object in the playback pool. */
+-     return (CorePlayback*) fusion_object_create( core->shared->playback_pool, core->world );
++     return (CorePlayback*) fusion_object_create( core->shared->playback_pool, core->world, fusion_id(core->world) );
+ }
+ 
+ DirectResult

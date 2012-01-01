@@ -2,7 +2,7 @@ Summary:	Audio sub system for multiple applications
 Summary(pl.UTF-8):	Dźwiękowy podsystem dla złożonych aplikacji
 Name:		FusionSound
 Version:	1.1.1
-Release:	7
+Release:	8
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://www.directfb.org/downloads/Core/%{name}-%{version}.tar.gz
@@ -14,7 +14,7 @@ Patch3:		compile.patch
 Patch4:		%{name}-update.patch
 Patch5:		%{name}-ffmpeg.patch
 URL:		http://www.directfb.org/index.php?path=Platform/FusionSound
-BuildRequires:	DirectFB-devel >= 1:1.4.0
+BuildRequires:	DirectFB-devel >= 1:1.4.15
 # for examples
 BuildRequires:	LiTE-devel >= 0.8.9
 BuildRequires:	alsa-lib-devel >= 0.9
@@ -27,9 +27,10 @@ BuildRequires:	libtimidity-devel >= 0.1.0
 BuildRequires:	libtool
 BuildRequires:	libvorbis-devel >= 1:1.0.0
 BuildRequires:	pkgconfig >= 1:0.9
+Requires:	DirectFB >= 1:1.4.15
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		dfblibdir	%{_libdir}/directfb-1.4-5
+%define		dfblibdir	%{_libdir}/directfb-1.4-6
 
 %description
 FusionSound supports multiple applications using Fusion IPC. It
@@ -50,7 +51,7 @@ Summary:	Development files for the FusionSound
 Summary(pl.UTF-8):	Pliki rozwojowe dla FusionSound
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	DirectFB-devel >= 1:1.4.0
+Requires:	DirectFB-devel >= 1:1.4.15
 
 %description devel
 Header files required for development using FusionSound.
