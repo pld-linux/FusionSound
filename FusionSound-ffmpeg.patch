@@ -9,39 +9,6 @@
       AVFormatContext              *ctx;
       AVStream                     *st;
       void                         *iobuf;
-diff -Naurp FusionSound-1.1.1-original/configure.in FusionSound-1.1.1/configure.in
---- FusionSound-1.1.1-original/configure.in	2008-02-11 05:31:45.000000000 -0600
-+++ FusionSound-1.1.1/configure.in	2009-04-10 15:18:02.000000000 -0600
-@@ -513,11 +513,11 @@ AC_ARG_WITH(ffmpeg,
-     
- if test "x$with_ffmpeg" = "xyes"; then
-   AC_MSG_CHECKING([for libavcodec/libavformat])
--  if $PKG_CONFIG libavcodec libavformat; then
-+  if $PKG_CONFIG libavcodec libavformat libavutil; then
-     AC_MSG_RESULT(yes)
-     ffmpeg="yes"
--    FFMPEG_CFLAGS=`$PKG_CONFIG --cflags libavcodec libavformat`
--    FFMPEG_LIBS=`$PKG_CONFIG --libs libavcodec libavformat`
-+    FFMPEG_CFLAGS=`$PKG_CONFIG --cflags libavcodec libavformat libavutil`
-+    FFMPEG_LIBS=`$PKG_CONFIG --libs libavcodec libavformat libavutil`
-   else
-     AC_MSG_RESULT(no)
-     AC_MSG_WARN([
-diff -Naurp FusionSound-1.1.1-original/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c FusionSound-1.1.1/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c
---- FusionSound-1.1.1-original/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c	2008-02-11 05:31:45.000000000 -0600
-+++ FusionSound-1.1.1/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c	2009-04-10 15:18:21.000000000 -0600
-@@ -41,8 +41,8 @@
- 
- #include <misc/sound_util.h>
- 
--#include <avcodec.h>
--#include <avformat.h>
-+#include <libavcodec/avcodec.h>
-+#include <libavformat/avformat.h>
- 
- static DFBResult
- Probe( IFusionSoundMusicProvider_ProbeContext *ctx );
-
 --- FusionSound-1.1.1.org/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c	2011-09-11 20:21:02.521648411 +0200
 +++ FusionSound-1.1.1/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c	2011-09-11 20:20:22.216456936 +0200
 @@ -41,6 +41,7 @@
@@ -128,3 +95,78 @@ diff -Naurp FusionSound-1.1.1-original/interfaces/IFusionSoundMusicProvider/ifus
                 if (!data->st || data->st->codec->bit_rate < data->ctx->streams[i]->codec->bit_rate)
                      data->st = data->ctx->streams[i];
            }
+--- FusionSound-1.6.0/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c.orig	2012-06-19 21:43:14.057077681 +0200
++++ FusionSound-1.6.0/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c	2012-06-22 17:46:15.046796804 +0200
+@@ -1208,16 +1208,17 @@
+           return D_OOM();
+      }
+      
+-     if (init_put_byte( &data->pb, data->iobuf, 4096, 0, 
++     if (ffio_init_context( &data->pb, data->iobuf, 4096, 0, 
+                         (void*)data, av_read_callback, NULL,
+                         direct_stream_seekable( stream ) ? av_seek_callback : NULL ) < 0) {
+-          D_ERROR( "IFusionSoundMusicProvider_FFmpeg: init_put_byte() failed!\n" );
++          D_ERROR( "IFusionSoundMusicProvider_FFmpeg: ffio_init_context() failed!\n" );
+           IFusionSoundMusicProvider_FFmpeg_Destruct( thiz );
+           return DR_INIT;
+      }
+      
+-     if (av_open_input_stream( &data->ctx, &data->pb, filename, fmt, NULL ) < 0) {
+-          D_ERROR( "IFusionSoundMusicProvider_FFmpeg: av_open_input_stream() failed!\n" );
++     data->ctx->pb = &data->pb;
++     if (avformat_open_input( &data->ctx, filename, fmt, NULL ) < 0) {
++          D_ERROR( "IFusionSoundMusicProvider_FFmpeg: avformat_open_input() failed!\n" );
+           IFusionSoundMusicProvider_FFmpeg_Destruct( thiz );
+           return DR_FAILURE;
+      }
+--- FusionSound-1.6.0/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c.orig	2012-06-22 19:05:38.449930237 +0200
++++ FusionSound-1.6.0/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c	2012-06-22 20:12:51.699760976 +0200
+@@ -65,7 +65,7 @@
+ 
+      DirectStream                 *stream;
+ 
+-     AVIOContext                   pb;
++     AVIOContext                  *pb;
+      AVFormatContext              *ctx;
+      AVStream                     *st;
+      void                         *iobuf;
+@@ -424,6 +424,9 @@
+           }
+      }
+      
++     if (data->pb)
++	  av_free( data->pb);
++
+      if (data->iobuf)
+           D_FREE( data->iobuf );
+ 
+@@ -1208,15 +1211,24 @@
+           return D_OOM();
+      }
+      
+-     if (ffio_init_context( &data->pb, data->iobuf, 4096, 0, 
++     if ((data->pb = avio_alloc_context( data->iobuf, 4096, 0, 
+                         (void*)data, av_read_callback, NULL,
+-                        direct_stream_seekable( stream ) ? av_seek_callback : NULL ) < 0) {
+-          D_ERROR( "IFusionSoundMusicProvider_FFmpeg: ffio_init_context() failed!\n" );
++                        direct_stream_seekable( stream ) ? av_seek_callback : NULL )) == NULL) {
++          D_ERROR( "IFusionSoundMusicProvider_FFmpeg: avio_alloc_context() failed!\n" );
+           IFusionSoundMusicProvider_FFmpeg_Destruct( thiz );
+           return DR_INIT;
+      }
+-     
+-     data->ctx->pb = &data->pb;
++
++     if(data->ctx == NULL) {
++	  data->ctx = avformat_alloc_context();
++	  if (data->ctx == NULL) {
++               D_ERROR( "IFusionSoundMusicProvider_FFmpeg: avformat_alloc_context() failed!\n" );
++               IFusionSoundMusicProvider_FFmpeg_Destruct( thiz );
++               return DR_FAILURE;
++	  }
++     }
++
++     data->ctx->pb = data->pb;
+      if (avformat_open_input( &data->ctx, filename, fmt, NULL ) < 0) {
+           D_ERROR( "IFusionSoundMusicProvider_FFmpeg: avformat_open_input() failed!\n" );
+           IFusionSoundMusicProvider_FFmpeg_Destruct( thiz );

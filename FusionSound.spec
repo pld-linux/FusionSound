@@ -1,36 +1,32 @@
 Summary:	Audio sub system for multiple applications
 Summary(pl.UTF-8):	Dźwiękowy podsystem dla złożonych aplikacji
 Name:		FusionSound
-Version:	1.1.1
-Release:	9
+Version:	1.6.0
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
-Source0:	http://www.directfb.org/downloads/Core/%{name}-%{version}.tar.gz
-# Source0-md5:	f29b0e6bb693e59b7303c163c737a39b
+Source0:	http://www.directfb.org/downloads/Core/FusionSound/%{name}-%{version}.tar.gz
+# Source0-md5:	018f7759e48ad9e07c4d34b93479482d
 Patch0:		%{name}-conf.patch
-Patch1:		%{name}-git.patch
-Patch2:		%{name}-leck.patch
-Patch3:		compile.patch
-Patch4:		%{name}-update.patch
-Patch5:		%{name}-ffmpeg.patch
+Patch1:		%{name}-ffmpeg.patch
 URL:		http://www.directfb.org/index.php?path=Platform/FusionSound
-BuildRequires:	DirectFB-devel >= 1:1.4.15
+BuildRequires:	DirectFB-devel >= 1:1.6.0
 # for examples
 BuildRequires:	LiTE-devel >= 0.8.9
 BuildRequires:	alsa-lib-devel >= 0.9
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
-BuildRequires:	ffmpeg-devel >= 0.4.9-4.20080822
+BuildRequires:	ffmpeg-devel >= 0.8
 BuildRequires:	libcddb-devel >= 1.0.0
 BuildRequires:	libmad-devel
 BuildRequires:	libtimidity-devel >= 0.1.0
 BuildRequires:	libtool
 BuildRequires:	libvorbis-devel >= 1:1.0.0
 BuildRequires:	pkgconfig >= 1:0.9
-Requires:	DirectFB >= 1:1.4.15
+Requires:	DirectFB >= 1:1.6.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		dfblibdir	%{_libdir}/directfb-1.4-6
+%define		dfblibdir	%{_libdir}/directfb-1.6-0
 
 %description
 FusionSound supports multiple applications using Fusion IPC. It
@@ -51,7 +47,7 @@ Summary:	Development files for the FusionSound
 Summary(pl.UTF-8):	Pliki rozwojowe dla FusionSound
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	DirectFB-devel >= 1:1.4.15
+Requires:	DirectFB-devel >= 1:1.6.0
 
 %description devel
 Header files required for development using FusionSound.
@@ -137,10 +133,6 @@ Moduł FusionSound dostarczający muzykę Ogg Vorbis.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
 
 %build
 %{__libtoolize}
@@ -150,8 +142,7 @@ Moduł FusionSound dostarczający muzykę Ogg Vorbis.
 %{__automake}
 %configure \
 	--enable-static
-%{__make} \
-	FFMPEG_CFLAGS="-I/usr/include/libavcodec -I/usr/include/libavformat"
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -176,8 +167,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/fsplay
 %attr(755,root,root) %{_bindir}/fsproxy
 %attr(755,root,root) %{_bindir}/fsvolume
-%attr(755,root,root) %{_libdir}/libfusionsound-1.1.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libfusionsound-1.1.so.1
+%attr(755,root,root) %{_libdir}/libfusionsound-1.6.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libfusionsound-1.6.so.0
 %dir %{dfblibdir}/interfaces/IFusionSound
 %attr(755,root,root) %{dfblibdir}/interfaces/IFusionSound/libifusionsound.so
 %attr(755,root,root) %{dfblibdir}/interfaces/IFusionSound/libifusionsound_dispatcher.so
