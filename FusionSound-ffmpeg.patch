@@ -1,172 +1,55 @@
---- fs/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c.orig	2011-06-15 20:01:31.000000000 +0200
-+++ fs/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c	2011-06-15 20:01:45.000000000 +0200
-@@ -64,7 +64,7 @@
- 
+--- FusionSound-1.6.2/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c.orig	2012-09-20 18:01:15.000000000 +0200
++++ FusionSound-1.6.2/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c	2012-10-05 20:04:42.281925937 +0200
+@@ -77,7 +77,7 @@
       DirectStream                 *stream;
  
--     ByteIOContext                 pb;
-+     AVIOContext                   pb;
-      AVFormatContext              *ctx;
-      AVStream                     *st;
-      void                         *iobuf;
---- FusionSound-1.1.1.org/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c	2011-09-11 20:21:02.521648411 +0200
-+++ FusionSound-1.1.1/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c	2011-09-11 20:20:22.216456936 +0200
-@@ -41,6 +41,7 @@
- 
- #include <misc/sound_util.h>
- 
-+#define FF_API_OLD_METADATA2 0
- #include <libavcodec/avcodec.h>
- #include <libavformat/avformat.h>
- 
-@@ -476,17 +477,37 @@
- IFusionSoundMusicProvider_FFmpeg_GetTrackDescription( IFusionSoundMusicProvider *thiz,
-                                                       FSTrackDescription        *desc )
- {
-+     AVDictionaryEntry *tag = NULL;
-+
-      DIRECT_INTERFACE_GET_DATA( IFusionSoundMusicProvider_FFmpeg )
--     
-+
-      if (!desc)
-           return DR_INVARG;
- 
--     direct_snputs( desc->artist, data->ctx->author, FS_TRACK_DESC_ARTIST_LENGTH );
--     direct_snputs( desc->title, data->ctx->title, FS_TRACK_DESC_TITLE_LENGTH );
--     direct_snputs( desc->album, data->ctx->album, FS_TRACK_DESC_ALBUM_LENGTH );
--     direct_snputs( desc->genre, data->ctx->genre, FS_TRACK_DESC_GENRE_LENGTH );
--     direct_snputs( desc->encoding, data->codec->codec->name, FS_TRACK_DESC_ENCODING_LENGTH );
--     desc->year = data->ctx->year;
-+     tag = av_dict_get(data->ctx->metadata, "artist", NULL, 0);
-+     if (tag)
-+       direct_snputs( desc->artist, tag->value, FS_TRACK_DESC_ARTIST_LENGTH );
-+
-+     tag = av_dict_get(data->ctx->metadata, "title", NULL, 0);
-+     if (tag)
-+       direct_snputs( desc->title, tag->value, FS_TRACK_DESC_TITLE_LENGTH );
-+
-+     tag = av_dict_get(data->ctx->metadata, "album", NULL, 0);
-+     if (tag)
-+       direct_snputs( desc->album, tag->value, FS_TRACK_DESC_ALBUM_LENGTH );
-+
-+     tag = av_dict_get(data->ctx->metadata, "genre", NULL, 0);
-+     if (tag)
-+       direct_snputs( desc->genre, tag->value, FS_TRACK_DESC_GENRE_LENGTH );
-+
-+     tag = av_dict_get(data->ctx->metadata, "encoding", NULL, 0);
-+     if (tag)
-+       direct_snputs( desc->encoding, tag->value, FS_TRACK_DESC_ENCODING_LENGTH );
-+
-+     tag = av_dict_get(data->ctx->metadata, "year", NULL, 0);
-+     if (tag)
-+       desc->year = atoi(tag->value);
-+
-      desc->bitrate = data->codec->bit_rate;
-      desc->replaygain = desc->replaygain_album = 0;
-      
-@@ -595,8 +616,8 @@
-           }
-           
-           len = AVCODEC_MAX_AUDIO_FRAME_SIZE;
--          decoded = avcodec_decode_audio2( data->codec, 
--                                          (s16*)data->buf, &len, pkt_data, pkt_size );
-+          decoded = avcodec_decode_audio3( data->codec, 
-+                                          (s16*)data->buf, &len, &pkt );
-           if (decoded < 0) {
-                av_free_packet( &pkt );
-                pkt_size = 0;
-@@ -800,8 +821,8 @@
-           }
-           
-           len = AVCODEC_MAX_AUDIO_FRAME_SIZE;
--          decoded = avcodec_decode_audio2( data->codec,
--                                          (s16*)data->buf, &len, pkt_data, pkt_size );
-+          decoded = avcodec_decode_audio3( data->codec,
-+                                          (s16*)data->buf, &len, &pkt );
-           if (decoded < 0) {
-                av_free_packet( &pkt );
-                pkt_size = 0;
-@@ -1208,7 +1229,7 @@
-      }
-      
-      for (i = 0; i < data->ctx->nb_streams; i++) {
--          if (data->ctx->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO) {
-+          if (data->ctx->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO) {
-                if (!data->st || data->st->codec->bit_rate < data->ctx->streams[i]->codec->bit_rate)
-                     data->st = data->ctx->streams[i];
-           }
---- FusionSound-1.6.0/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c.orig	2012-06-19 21:43:14.057077681 +0200
-+++ FusionSound-1.6.0/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c	2012-06-22 17:46:15.046796804 +0200
-@@ -1208,16 +1208,17 @@
-           return D_OOM();
-      }
-      
--     if (init_put_byte( &data->pb, data->iobuf, 4096, 0, 
-+     if (ffio_init_context( &data->pb, data->iobuf, 4096, 0, 
-                         (void*)data, av_read_callback, NULL,
-                         direct_stream_seekable( stream ) ? av_seek_callback : NULL ) < 0) {
--          D_ERROR( "IFusionSoundMusicProvider_FFmpeg: init_put_byte() failed!\n" );
-+          D_ERROR( "IFusionSoundMusicProvider_FFmpeg: ffio_init_context() failed!\n" );
-           IFusionSoundMusicProvider_FFmpeg_Destruct( thiz );
-           return DR_INIT;
-      }
-      
--     if (av_open_input_stream( &data->ctx, &data->pb, filename, fmt, NULL ) < 0) {
--          D_ERROR( "IFusionSoundMusicProvider_FFmpeg: av_open_input_stream() failed!\n" );
-+     data->ctx->pb = &data->pb;
-+     if (avformat_open_input( &data->ctx, filename, fmt, NULL ) < 0) {
-+          D_ERROR( "IFusionSoundMusicProvider_FFmpeg: avformat_open_input() failed!\n" );
-           IFusionSoundMusicProvider_FFmpeg_Destruct( thiz );
-           return DR_FAILURE;
-      }
---- FusionSound-1.6.0/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c.orig	2012-06-22 19:05:38.449930237 +0200
-+++ FusionSound-1.6.0/interfaces/IFusionSoundMusicProvider/ifusionsoundmusicprovider_ffmpeg.c	2012-06-22 20:12:51.699760976 +0200
-@@ -65,7 +65,7 @@
- 
-      DirectStream                 *stream;
- 
+ #if (LIBAVFORMAT_VERSION_MAJOR >= 53)
 -     AVIOContext                   pb;
-+     AVIOContext                  *pb;
-      AVFormatContext              *ctx;
-      AVStream                     *st;
-      void                         *iobuf;
-@@ -424,6 +424,9 @@
-           }
++     AVIOContext                   *pb;
+ #else
+      ByteIOContext                 pb;
+ #endif
+@@ -410,6 +410,11 @@
+           data->dest.buffer = NULL;
       }
-      
-+     if (data->pb)
-+	  av_free( data->pb);
-+
-      if (data->iobuf)
-           D_FREE( data->iobuf );
  
-@@ -1208,15 +1211,24 @@
++     if (data->pb) {
++	  av_free( data->pb );
++	  data->pb = NULL;
++     }
++
+      /* release output buffer */
+      if (data->buf) {
+           D_FREE( data->buf );
+@@ -1247,16 +1252,26 @@
            return D_OOM();
       }
-      
--     if (ffio_init_context( &data->pb, data->iobuf, 4096, 0, 
-+     if ((data->pb = avio_alloc_context( data->iobuf, 4096, 0, 
+ 
+-     if (init_put_byte( &data->pb, data->iobuf, 4096, 0,
++     if ((data->pb = avio_alloc_context( data->iobuf, 4096, 0,
                          (void*)data, av_read_callback, NULL,
 -                        direct_stream_seekable( stream ) ? av_seek_callback : NULL ) < 0) {
--          D_ERROR( "IFusionSoundMusicProvider_FFmpeg: ffio_init_context() failed!\n" );
+-          D_ERROR( "IFusionSoundMusicProvider_FFmpeg: init_put_byte() failed!\n" );
 +                        direct_stream_seekable( stream ) ? av_seek_callback : NULL )) == NULL) {
 +          D_ERROR( "IFusionSoundMusicProvider_FFmpeg: avio_alloc_context() failed!\n" );
            IFusionSoundMusicProvider_FFmpeg_Destruct( thiz );
            return DR_INIT;
       }
--     
--     data->ctx->pb = &data->pb;
-+
-+     if(data->ctx == NULL) {
-+	  data->ctx = avformat_alloc_context();
-+	  if (data->ctx == NULL) {
-+               D_ERROR( "IFusionSoundMusicProvider_FFmpeg: avformat_alloc_context() failed!\n" );
-+               IFusionSoundMusicProvider_FFmpeg_Destruct( thiz );
-+               return DR_FAILURE;
-+	  }
-+     }
+ 
+-     if (av_open_input_stream( &data->ctx, &data->pb, filename, fmt, NULL ) < 0) {
+-          D_ERROR( "IFusionSoundMusicProvider_FFmpeg: av_open_input_stream() failed!\n" );
++    if(data->ctx == NULL) {
++        data->ctx = avformat_alloc_context();
++        if (data->ctx == NULL) {
++              D_ERROR( "IFusionSoundMusicProvider_FFmpeg: avformat_alloc_context() failed!\n" );
++              IFusionSoundMusicProvider_FFmpeg_Destruct( thiz );
++              return DR_FAILURE;
++        }
++    }
 +
 +     data->ctx->pb = data->pb;
-      if (avformat_open_input( &data->ctx, filename, fmt, NULL ) < 0) {
-           D_ERROR( "IFusionSoundMusicProvider_FFmpeg: avformat_open_input() failed!\n" );
++     if (avformat_open_input( &data->ctx, filename, fmt, NULL ) < 0) {
++          D_ERROR( "IFusionSoundMusicProvider_FFmpeg: avformat_open_input() failed!\n" );
            IFusionSoundMusicProvider_FFmpeg_Destruct( thiz );
+           return DR_FAILURE;
+      }

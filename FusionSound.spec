@@ -1,12 +1,12 @@
 Summary:	Audio sub system for multiple applications
 Summary(pl.UTF-8):	Dźwiękowy podsystem dla złożonych aplikacji
 Name:		FusionSound
-Version:	1.6.0
+Version:	1.6.2
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://www.directfb.org/downloads/Core/FusionSound/%{name}-%{version}.tar.gz
-# Source0-md5:	018f7759e48ad9e07c4d34b93479482d
+# Source0-md5:	bc6ed0cb77c0b8954f91706fe8aa95bc
 Patch0:		%{name}-conf.patch
 Patch1:		%{name}-ffmpeg.patch
 URL:		http://www.directfb.org/index.php?path=Platform/FusionSound
@@ -168,7 +168,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/fsproxy
 %attr(755,root,root) %{_bindir}/fsvolume
 %attr(755,root,root) %{_libdir}/libfusionsound-1.6.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libfusionsound-1.6.so.0
+%attr(755,root,root) %ghost %{_libdir}/libfusionsound-1.6.so.2
 %dir %{dfblibdir}/interfaces/IFusionSound
 %attr(755,root,root) %{dfblibdir}/interfaces/IFusionSound/libifusionsound.so
 %attr(755,root,root) %{dfblibdir}/interfaces/IFusionSound/libifusionsound_dispatcher.so
