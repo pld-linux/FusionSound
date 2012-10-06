@@ -9,6 +9,7 @@ Source0:	http://www.directfb.org/downloads/Core/FusionSound/%{name}-%{version}.t
 # Source0-md5:	bc6ed0cb77c0b8954f91706fe8aa95bc
 Patch0:		%{name}-conf.patch
 Patch1:		%{name}-ffmpeg.patch
+Patch2:		%{name}-format.patch
 URL:		http://www.directfb.org/index.php?path=Platform/FusionSound
 BuildRequires:	DirectFB-devel >= 1:1.6.0
 # for examples
@@ -133,6 +134,7 @@ Moduł FusionSound dostarczający muzykę Ogg Vorbis.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__libtoolize}
